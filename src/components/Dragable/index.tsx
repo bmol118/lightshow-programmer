@@ -3,52 +3,38 @@ import React, { MouseEventHandler, useCallback } from "react"
 import { useEffect, useState } from "react"
 import "./style.css"
 
+
+interface DragableProps {
+    startPosition: {
+        x: number,
+        y: number,
+    },
+    mousePosition: {
+        x: number,
+        y: number,
+    },
+    isLocked?: boolean
+}
+
+
+
 // Based on a stack overflow answer by Jared Forsyth - https://stackoverflow.com/questions/20926551/recommended-way-of-making-react-component-div-draggable
 // Updated to a functional react component by me.
-const Dragable = () => {
-    const [position, setPosition] = useState({x: 0, y: 0})
-    const [localPosition, setLocalPosition] = useState({x: 0, y: 0});
+const Dragable = (props: DragableProps) => {
+    
+    const [position, setPosition] = useState(props.startPosition)
     const [isDragging, setIsDragging] = useState(false)
-    const [rel, setRel] = useState(null) // Position relative to the cursor
+    const [isLocked, setIsLocked] = useState(props.isLocked ?? false) // Once the layout is set, we should "Lock" the component to its current location, once this is set we can do other operations on the component.
 
     const toggleDragging = (event: any) => {
-        
         setIsDragging(!isDragging)
-
-        if(isDragging){
-            console.log("Now Dragging!")
-            window.addEventListener('mousemove', handleWindowMouseMove)
-        }
-        else {
-            console.log("No longer dragging")
-            window.removeEventListener(
-                'mousemove',
-                handleWindowMouseMove,
-              );
-        }
     }
 
-    const handleWindowMouseMove = useCallback((event: MouseEvent) => {
-        console.log("Handle Mouse move was called")
-        setPosition({
-            x: event.clientX,
-            y: event.clientY,
-            });
-      }, [])
-
-
-    // useEffect(() => {
-    //     window.addEventListener('mousemove', handleWindowMouseMove);
-
-    //     // Runs when the component unmounts to prevent memory leaks from a hanging event listener.
-    //     return () => {
-    //         window.removeEventListener(
-    //           'mousemove',
-    //           handleWindowMouseMove,
-    //         );
-    //     };
-
-    // }, [])
+    useEffect(() => {
+        if(isDragging){
+            setPosition(props.mousePosition)
+        }
+    }, [props.mousePosition])
 
     return (
     <div className="unselectable"
