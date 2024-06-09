@@ -4,12 +4,12 @@ import { useEffect, useState } from "react"
 import "./style.css"
 
 
-interface DragableProps {
-    startPosition: {
+export interface DragableProps {
+    startPosition?: {
         x: number,
         y: number,
     },
-    mousePosition: {
+    mousePosition?: {
         x: number,
         y: number,
     },
@@ -22,11 +22,13 @@ interface DragableProps {
 // Updated to a functional react component by me.
 const Dragable = (props: DragableProps) => {
     
+    // todo: find a way to add an offset to the position so we can drag from different parts of the component
     const [position, setPosition] = useState(props.startPosition)
     const [isDragging, setIsDragging] = useState(false)
     const [isLocked, setIsLocked] = useState(props.isLocked ?? false) // Once the layout is set, we should "Lock" the component to its current location, once this is set we can do other operations on the component.
 
-    const toggleDragging = (event: any) => {
+    const toggleDragging = (e: React.MouseEvent<Element, MouseEvent>) => {
+        console.log(e)
         setIsDragging(!isDragging)
     }
 

@@ -1,12 +1,16 @@
-import React from "react"
+import React, { Component } from "react"
 import { useState, useCallback, useEffect } from "react"
-import { Dragable } from "../Dragable"
+import { Dragable, DragableProps } from "../Dragable/dragable"
+
+interface CanvasProps {
+    renderedComponents?: DragableProps[]
+}
 
 
 // This will be the container class that you can move around your LightStrips in. 
-const Canvas = () => {
+const Canvas = (props: CanvasProps) => {
     const [mousePosition, setMousePosition] = useState({x: 0, y: 0})
-
+    // useCallback ensures that the same "handleWindowMouseMove" is referenced when both adding, and removing the event listener.
     const handleWindowMouseMove = useCallback((event: MouseEvent) => {
         setMousePosition({
             x: event.clientX,
@@ -16,7 +20,6 @@ const Canvas = () => {
 
     useEffect(() => {
         window.addEventListener('mousemove', handleWindowMouseMove);
-
         // Runs when the component unmounts to prevent memory leaks from a hanging event listener.
         return () => {
             window.removeEventListener(
@@ -24,16 +27,15 @@ const Canvas = () => {
               handleWindowMouseMove,
             );
         };
-
     }, [])
 
-
-
     return (<>
-    
-        <Dragable startPosition={{x: 2 , y: 4}} mousePosition={{x: mousePosition.x, y: mousePosition.y}}></Dragable>
-        <Dragable startPosition={{x: 300 , y: 50}} mousePosition={{x: mousePosition.x, y: mousePosition.y}}></Dragable>
-
+        {
+            props.renderedComponents.map(c => {
+                console.log("state did change")
+                return (<Dragable startPosition={c.startPosition} mousePosition={mousePosition} />)
+            })
+        }
     </>)
 }
 

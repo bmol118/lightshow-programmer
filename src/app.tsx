@@ -1,12 +1,8 @@
 import { createRoot } from 'react-dom/client';
-import { Dragable } from './components/Dragable';
-import { Canvas } from './components/Canvas';
+import { ProjectEditor } from './components/ProjectEditor/projectEditor';
+
 
 const root = createRoot(document.body);
 root.render(
-<h2>
-    <Canvas>
-        
-    </Canvas>
-</h2>
+    <ProjectEditor/>
 );
